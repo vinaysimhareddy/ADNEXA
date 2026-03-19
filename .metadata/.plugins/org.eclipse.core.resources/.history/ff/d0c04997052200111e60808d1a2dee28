@@ -1,0 +1,37 @@
+package com.adnexa.controller;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.adnexa.dto.InfluencerProfileRequest;
+import com.adnexa.dto.InfluencerProfileResponse;
+import com.adnexa.service.InfluencerProfileService;
+
+@RestController
+@RequestMapping("api/influencer")
+public class InfluencerProfileController {
+	private final InfluencerProfileService influencerProfileService;
+	public InfluencerProfileController(InfluencerProfileService influencerProfileService) {
+		this.influencerProfileService = influencerProfileService;
+	}
+	@PreAuthorize("hasRole('INFLUENCER')")
+	@PostMapping("/profile")
+	public String createProfile(@RequestBody InfluencerProfileRequest request) {
+		return influencerProfileService.createProfile(request);
+	}
+	@GetMapping("/profile")
+	@PreAuthorize("hasRole('INFLUENCER')")
+	public InfluencerProfileResponse getProfile() {
+	    return influencerProfileService.getProfile();
+	}
+	@PreAuthorize("hasRole('INFLUENCER')")
+	@PutMapping("/profile")
+	public String updateProfile(@RequestBody InfluencerProfileRequest request) {
+	    return influencerProfileService.updateProfile(request);
+	}
+}

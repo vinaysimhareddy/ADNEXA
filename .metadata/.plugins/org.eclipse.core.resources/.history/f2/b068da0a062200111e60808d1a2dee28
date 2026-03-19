@@ -1,0 +1,5 @@
+package com.adnexa.entity;
+
+public class CampaignApplication {
+
+}

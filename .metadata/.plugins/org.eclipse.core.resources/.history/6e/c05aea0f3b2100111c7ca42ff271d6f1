@@ -1,0 +1,51 @@
+package com.adnexa.controller;
+
+import java.util.List;
+
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.adnexa.dto.CampaignRequest;
+import com.adnexa.dto.InfluencerSearchResponse;
+import com.adnexa.service.CampaignService;
+import com.adnexa.service.InfluencerProfileService;
+
+@RestController
+@RequestMapping("/api/advertiser")
+public class AdvertiserController {
+
+    private final InfluencerProfileService influencerService;
+    private final CampaignService campaignService;
+
+    public AdvertiserController(InfluencerProfileService influencerService, CampaignService campaignService) {
+        this.influencerService = influencerService;
+        this.campaignService = campaignService;
+    }
+
+    @PreAuthorize("hasRole('ADVERTISER')")
+    @GetMapping("/dashboard")
+    public String advertiserDashboard() {
+        return "Advertiser Access";
+    }
+
+    @PreAuthorize("hasRole('ADVERTISER')")
+    @GetMapping("/influencers")
+    public List<InfluencerSearchResponse> getAllInfluencers() {
+        return influencerService.getAllInfluencers();
+    }
+    @PostMapping("/campaign")
+    @PreAuthorize("hasRole('ADVERTISER')")
+    public String createCampaign(
+            Authentication authentication,
+            @RequestBody CampaignRequest request) {
+
+        String email = authentication.getName();
+
+        return campaignService.createCampaign(email, request);
+    }
+}

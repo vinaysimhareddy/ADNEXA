@@ -1,0 +1,113 @@
+package com.adnexa.controller;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.adnexa.dto.ApplicationResponse;
+import com.adnexa.dto.CampaignRequest;
+import com.adnexa.dto.CampaignResponse;
+import com.adnexa.dto.InfluencerCardResponse;
+import com.adnexa.dto.InfluencerSearchRequest;
+import com.adnexa.service.CampaignService;
+import com.adnexa.service.InfluencerSearchService;
+
+@RestController
+@RequestMapping("/api/advertiser")
+public class AdvertiserController {
+
+    private final InfluencerSearchService influencerSearchService;
+    private final CampaignService campaignService;
+
+    public AdvertiserController(
+            InfluencerSearchService influencerSearchService,
+            CampaignService campaignService) {
+
+        this.influencerSearchService = influencerSearchService;
+        this.campaignService = campaignService;
+    }
+
+    // ---------------- DASHBOARD ----------------
+
+    @PreAuthorize("hasRole('ADVERTISER')")
+    @GetMapping("/dashboard")
+    public String advertiserDashboard() {
+        return "Advertiser Access";
+    }
+
+    // ---------------- INFLUENCER SEARCH ----------------
+
+    @GetMapping("/influencers/search")
+    @PreAuthorize("hasRole('ADVERTISER')")
+    public Page<InfluencerCardResponse> searchInfluencers(
+            InfluencerSearchRequest request,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "followers") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction) {
+
+        return influencerSearchService.searchInfluencers(request, page, size, sortBy, direction);
+    }
+
+    // ---------------- CAMPAIGN ----------------
+
+    @PostMapping("/campaign")
+    @PreAuthorize("hasRole('ADVERTISER')")
+    public String createCampaign(
+            Authentication authentication,
+            @RequestBody CampaignRequest request) {
+
+        String email = authentication.getName();
+        return campaignService.createCampaign(email, request);
+    }
+
+    @PreAuthorize("hasRole('ADVERTISER')")
+    @GetMapping("/campaigns")
+    public List<CampaignResponse> getMyCampaigns(Authentication authentication) {
+
+        String email = authentication.getName();
+        return campaignService.getAdvertiserCampaigns(email);
+    }
+
+    // ---------------- APPLICATION MANAGEMENT ----------------
+
+    @PreAuthorize("hasRole('ADVERTISER')")
+    @GetMapping("/campaign/{campaignId}/applications")
+    public List<ApplicationResponse> getApplications(
+            @PathVariable Long campaignId,
+            Authentication authentication) {
+
+        String email = authentication.getName();
+        return campaignService.getCampaignApplications(campaignId, email);
+    }
+
+    @PreAuthorize("hasRole('ADVERTISER')")
+    @PutMapping("/application/{applicationId}/accept")
+    public String acceptApplication(
+            @PathVariable Long applicationId,
+            Authentication authentication) {
+
+        String email = authentication.getName();
+        return campaignService.acceptApplication(applicationId, email);
+    }
+
+    @PreAuthorize("hasRole('ADVERTISER')")
+    @PutMapping("/application/{applicationId}/reject")
+    public String rejectApplication(
+            @PathVariable Long applicationId,
+            Authentication authentication) {
+
+        String email = authentication.getName();
+        return campaignService.rejectApplication(applicationId, email);
+    }
+}

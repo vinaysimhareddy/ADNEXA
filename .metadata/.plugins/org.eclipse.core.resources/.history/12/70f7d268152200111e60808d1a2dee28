@@ -1,0 +1,140 @@
+package com.adnexa.service;
+
+import java.util.List;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import com.adnexa.dto.InfluencerCardResponse;
+import com.adnexa.dto.InfluencerProfileRequest;
+import com.adnexa.dto.InfluencerProfileResponse;
+import com.adnexa.dto.InfluencerSearchResponse;
+import com.adnexa.entity.InfluencerProfile;
+import com.adnexa.entity.User;
+import com.adnexa.repository.InfluencerProfileRepository;
+import com.adnexa.repository.UserRepository;
+
+@Service
+public class InfluencerProfileService {
+
+    private final InfluencerProfileRepository profileRepository;
+    private final UserRepository userRepository;
+
+    public InfluencerProfileService(
+            InfluencerProfileRepository profileRepository,
+            UserRepository userRepository) {
+        this.profileRepository = profileRepository;
+        this.userRepository = userRepository;
+    }
+
+    public String createProfile(InfluencerProfileRequest request) {
+    	
+    	String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+    	User user = userRepository.findByEmail(email)
+    	        .orElseThrow(() -> new RuntimeException("User not found"));
+
+    	InfluencerProfile profile = InfluencerProfile.builder()
+    	        .user(user)
+    	        .instagramFollowers(request.getInstagramFollowers())
+    	        .youtubeFollowers(request.getYoutubeFollowers())
+    	        .tiktokFollowers(request.getTiktokFollowers())
+    	        .category(request.getCategory())
+    	        .pricePerPost(request.getPricePerPost())
+    	        .pricePerStory(request.getPricePerStory())
+    	        .bio(request.getBio())
+    	        .location(request.getLocation())
+    	        .build();
+
+        profileRepository.save(profile);
+
+        return "Influencer profile created successfully";
+    }
+    public InfluencerProfileResponse getProfile() {
+
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        InfluencerProfile profile = profileRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
+
+        return InfluencerProfileResponse.builder()
+                .instagramFollowers(profile.getInstagramFollowers())
+                .youtubeFollowers(profile.getYoutubeFollowers())
+                .tiktokFollowers(profile.getTiktokFollowers())
+                .category(profile.getCategory())
+                .pricePerPost(profile.getPricePerPost())
+                .pricePerStory(profile.getPricePerStory())
+                .bio(profile.getBio())
+                .location(profile.getLocation())
+                .build();
+    }
+    public String updateProfile(InfluencerProfileRequest request) {
+
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        InfluencerProfile profile = profileRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
+
+        profile.setInstagramFollowers(request.getInstagramFollowers());
+        profile.setYoutubeFollowers(request.getYoutubeFollowers());
+        profile.setTiktokFollowers(request.getTiktokFollowers());
+        profile.setCategory(request.getCategory());
+        profile.setPricePerPost(request.getPricePerPost());
+        profile.setPricePerStory(request.getPricePerStory());
+        profile.setBio(request.getBio());
+        profile.setLocation(request.getLocation());
+
+        profileRepository.save(profile);
+
+        return "Profile updated successfully";
+    }
+    public List<InfluencerSearchResponse> getAllInfluencers() {
+
+        List<InfluencerProfile> profiles = profileRepository.findAll();
+
+        return profiles.stream()
+                .map(profile -> InfluencerSearchResponse.builder()
+                        .name(profile.getUser().getName())
+                        .category(profile.getCategory())
+                        .instagramFollowers(profile.getInstagramFollowers())
+                        .youtubeFollowers(profile.getYoutubeFollowers())
+                        .tiktokFollowers(profile.getTiktokFollowers())
+                        .pricePerPost(profile.getPricePerPost())
+                        .pricePerStory(profile.getPricePerStory())
+                        .location(profile.getLocation())
+                        .build())
+                .toList();
+    }
+    public List<InfluencerCardResponse> getAllInfluencers() {
+
+        List<InfluencerProfile> profiles = influencerProfileRepository.findAll();
+
+        return profiles.stream()
+                .map(profile -> InfluencerCardResponse.builder()
+                        .name(profile.getUser().getName())
+                        .category(profile.getCategory())
+                        .instagramFollowers(profile.getInstagramFollowers())
+                        .youtubeFollowers(profile.getYoutubeFollowers())
+                        .tiktokFollowers(profile.getTiktokFollowers())
+                        .pricePerPost(profile.getPricePerPost())
+                        .location(profile.getLocation())
+                        .bio(profile.getBio())
+                        .build())
+                .toList();
+    }
+}

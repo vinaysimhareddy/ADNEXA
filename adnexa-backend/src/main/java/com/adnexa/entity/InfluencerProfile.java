@@ -28,11 +28,11 @@ public class InfluencerProfile {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private Integer instagramFollowers;
+    private Long instagramFollowers;
 
-    private Integer youtubeFollowers;
+    private Long youtubeFollowers;
 
-    private Integer tiktokFollowers;
+    private Long tiktokFollowers;
 
     private String category;
 

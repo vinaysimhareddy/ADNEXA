@@ -1,0 +1,89 @@
+package com.adnexa.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.adnexa.dto.CampaignRequest;
+import com.adnexa.dto.CampaignResponse;
+import com.adnexa.entity.Campaign;
+import com.adnexa.entity.User;
+import com.adnexa.repository.CampaignRepository;
+import com.adnexa.repository.UserRepository;
+
+@Service
+public class CampaignService {
+
+    private final CampaignRepository campaignRepository;
+    private final UserRepository userRepository;
+
+    public CampaignService(CampaignRepository campaignRepository,
+                           UserRepository userRepository) {
+        this.campaignRepository = campaignRepository;
+        this.userRepository = userRepository;
+    }
+
+    public String createCampaign(String email, CampaignRequest request) {
+    	
+        User advertiser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Advertiser not found"));
+        
+        if (!advertiser.getRole().equals("ADVERTISER")) {
+    	    throw new RuntimeException("Only advertisers can create campaigns");
+    	}
+
+        Campaign campaign = Campaign.builder()
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .category(request.getCategory())
+                .budget(request.getBudget())
+                .platform(request.getPlatform())
+                .deadline(request.getDeadline())
+                .status("OPEN")
+                .advertiser(advertiser)
+                .build();
+
+        campaignRepository.save(campaign);
+
+        return "Campaign created successfully";
+    }
+    public List<CampaignResponse> getAdvertiserCampaigns(String email) {
+
+        User advertiser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Advertiser not found"));
+
+        List<Campaign> campaigns = campaignRepository.findByAdvertiser(advertiser);
+
+        return campaigns.stream()
+                .map((Campaign campaign) -> CampaignResponse.builder()
+                        .id(campaign.getId())
+                        .title(campaign.getTitle())
+                        .description(campaign.getDescription())
+                        .category(campaign.getCategory())
+                        .budget(campaign.getBudget())
+                        .platform(campaign.getPlatform())
+                        .deadline(campaign.getDeadline())
+                        .status(campaign.getStatus())
+                        .advertiserName(campaign.getAdvertiser().getName())
+                        .build())
+                .toList();
+    }
+    public List<CampaignResponse> getOpenCampaigns() {
+
+        List<Campaign> campaigns = campaignRepository.findByStatus("OPEN");
+
+        return campaigns.stream()
+                .map(campaign -> CampaignResponse.builder()
+                        .id(campaign.getId())
+                        .title(campaign.getTitle())
+                        .description(campaign.getDescription())
+                        .category(campaign.getCategory())
+                        .budget(campaign.getBudget())
+                        .platform(campaign.getPlatform())
+                        .deadline(campaign.getDeadline())
+                        .status(campaign.getStatus())
+                        .advertiserName(campaign.getAdvertiser().getName())
+                        .build())
+                .toList();
+    }
+}

@@ -1,0 +1,45 @@
+package com.adnexa.service;
+
+import org.springframework.stereotype.Service;
+
+import com.adnexa.dto.InfluencerProfileRequest;
+import com.adnexa.entity.InfluencerProfile;
+import com.adnexa.entity.User;
+import com.adnexa.repository.InfluencerProfileRepository;
+import com.adnexa.repository.UserRepository;
+
+@Service
+public class InfluencerProfileService {
+
+    private final InfluencerProfileRepository profileRepository;
+    private final UserRepository userRepository;
+
+    public InfluencerProfileService(
+            InfluencerProfileRepository profileRepository,
+            UserRepository userRepository) {
+        this.profileRepository = profileRepository;
+        this.userRepository = userRepository;
+    }
+
+    public String createProfile(Long userId, InfluencerProfileRequest request) {
+
+    	User user = userRepository.findById(userId)
+    	        .orElseThrow(() -> new RuntimeException("User not found"));
+
+    	InfluencerProfile profile = InfluencerProfile.builder()
+    	        .user(user)
+    	        .instagramFollowers(request.getInstagramFollowers())
+    	        .youtubeFollowers(request.getYoutubeFollowers())
+    	        .tiktokFollowers(request.getTiktokFollowers())
+    	        .category(request.getCategory())
+    	        .pricePerPost(request.getPricePerPost())
+    	        .pricePerStory(request.getPricePerStory())
+    	        .bio(request.getBio())
+    	        .location(request.getLocation())
+    	        .build();
+
+        profileRepository.save(profile);
+
+        return "Profile created";
+    }
+}

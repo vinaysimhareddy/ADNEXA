@@ -1,0 +1,15 @@
+package com.adnexa.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.adnexa.entity.InfluencerProfile;
+
+@Repository
+public interface InfluencerProfileRepository extends JpaRepository<InfluencerProfile, Long> {
+
+    Optional<InfluencerProfile> findByUserId(Long userId);
+    Optional<InfluencerProfile> findByUser(User user);
+}
