@@ -6,7 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class InfluencerCardResponse {
-
     private String name;
     private String category;
     private long followers;

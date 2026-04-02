@@ -10,11 +10,13 @@ import com.adnexa.entity.User;
 
 public interface CampaignApplicationRepository extends JpaRepository<CampaignApplication, Long> {
 
-//    List<CampaignApplication> findByCampaign(Campaign campaign);
+
 
     List<CampaignApplication> findByInfluencer(User influencer);
     
     List<CampaignApplication> findByCampaignId(Long campaignId);
     Optional<CampaignApplication> findById(Long id);
+    
+    boolean existsByCampaignIdAndInfluencerId(Long campaignId, Long influencerId);
 
 }

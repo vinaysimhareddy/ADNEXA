@@ -1,0 +1,84 @@
+<div class="container mt-4">
+
+    <h2 class="mb-4 text-center">Find Influencers</h2>
+
+    <!-- 🔥 FILTER SECTION -->
+    <div class="card p-3 mb-4 shadow-sm">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <select class="form-control" [(ngModel)]="sortDirection">
+                    <option *ngFor="let s of sortOptions" [value]="s.value">
+                        {{ s.label }}
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-control" [(ngModel)]="filters.category">
+                    <option value="">All Categories</option>
+                    <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <input class="form-control" type="number" placeholder="Min Followers"
+                    [(ngModel)]="filters.minFollowers">
+            </div>
+
+            <div class="col-md-3">
+                <input class="form-control" type="number" placeholder="Max Price" [(ngModel)]="filters.maxPrice">
+            </div>
+
+            <div class="col-md-3">
+                <input class="form-control" placeholder="Location" [(ngModel)]="filters.location">
+            </div>
+
+            <div class="col-12 text-center">
+                <button class="btn btn-primary px-4" (click)="search()">Search</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 🔥 RESULTS GRID -->
+    <div class="row">
+        <div class="col-md-4 mb-4" *ngFor="let inf of influencers">
+
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+
+                    <h5 class="card-title">{{ inf.name }}</h5>
+
+                    <p class="text-muted">{{ inf.category }}</p>
+
+                    <p><strong>Followers:</strong> {{ inf.followers }}</p>
+                    <p><strong>Price:</strong> ₹{{ inf.price }}</p>
+                    <p><strong>Location:</strong> {{ inf.location }}</p>
+
+                    <p class="small">{{ inf.bio }}</p>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div *ngIf="influencers.length === 0" class="text-center mt-4">
+        <p>No influencers found.</p>
+    </div>
+
+    <!-- 🔥 PAGINATION -->
+    <div class="d-flex justify-content-center align-items-center mt-4">
+
+        <button class="btn btn-outline-primary me-3" (click)="prevPage()" [disabled]="page === 0">
+            Prev
+        </button>
+
+        <span>Page {{ page + 1 }} of {{ totalPages }}</span>
+
+        <button class="btn btn-outline-primary ms-3" (click)="nextPage()" [disabled]="page === totalPages - 1">
+            Next
+        </button>
+
+    </div>
+
+</div>

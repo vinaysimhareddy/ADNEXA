@@ -3,17 +3,13 @@ package com.adnexa.repository;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.stereotype.Repository;
 
 import com.adnexa.entity.InfluencerProfile;
 import com.adnexa.entity.User;
 
-@Repository
-public interface InfluencerProfileRepository extends JpaRepository<InfluencerProfile, Long>, JpaSpecificationExecutor<InfluencerProfile>{
-
-    Optional<InfluencerProfile> findByUserId(Long userId);
+public interface InfluencerProfileRepository
+        extends JpaRepository<InfluencerProfile, Long>,
+                org.springframework.data.jpa.repository.JpaSpecificationExecutor<InfluencerProfile> {
 
     Optional<InfluencerProfile> findByUser(User user);
-
 }

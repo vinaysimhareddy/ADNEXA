@@ -1,0 +1,5 @@
+package com.adnexa.enums;
+
+public class ApplicationStatus {
+
+}

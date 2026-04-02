@@ -1,13 +1,12 @@
 package com.adnexa.dto;
 
-import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Data;
+import java.time.LocalDate;
 
 @Data
 @Builder
 public class CampaignResponse {
-
     private Long id;
     private String title;
     private String description;
@@ -17,5 +16,4 @@ public class CampaignResponse {
     private LocalDate deadline;
     private String status;
     private String advertiserName;
-
 }

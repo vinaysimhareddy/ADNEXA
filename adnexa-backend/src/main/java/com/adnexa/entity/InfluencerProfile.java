@@ -1,23 +1,14 @@
 package com.adnexa.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "influencer_profiles")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class InfluencerProfile {
 
     @Id
@@ -29,18 +20,13 @@ public class InfluencerProfile {
     private User user;
 
     private Long instagramFollowers;
-
     private Long youtubeFollowers;
-
     private Long tiktokFollowers;
 
     private String category;
-
     private Double pricePerPost;
-
     private Double pricePerStory;
 
     private String bio;
-
     private String location;
 }

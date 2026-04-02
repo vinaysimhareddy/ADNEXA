@@ -1,6 +1,9 @@
 package com.adnexa.controller;
 
 
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,16 +21,15 @@ public class AuthController {
 	}
 	
 	@PostMapping("/register")
-	public String register(@RequestBody RegisterRequest request) {
-		return userService.registerUser(request);
+	public ResponseEntity<Map<String, String>> register(@RequestBody RegisterRequest request) {
+	    String result = userService.registerUser(request);
+	    return ResponseEntity.ok(Map.of("message", result));
 	}
+
 	@PostMapping("/login")
-	public String login(@RequestBody LoginRequest request) {
-		return userService.loginUser(request);
+	public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest request) {
+	    String token = userService.loginUser(request);
+	    return ResponseEntity.ok(Map.of("token", token));
 	}
-	
-	/*
-	 * @GetMapping("/secure") public String secure() { return "JWT is working"; }
-	 */
 	
 }

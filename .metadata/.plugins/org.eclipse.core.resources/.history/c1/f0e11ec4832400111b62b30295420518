@@ -1,0 +1,5 @@
+package com.adnexa.config;
+
+public class CorsConfig {
+
+}

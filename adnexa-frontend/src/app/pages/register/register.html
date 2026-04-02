@@ -1,0 +1,16 @@
+<div class="container mt-5">
+
+  <h2>Register</h2>
+
+  <input class="form-control mb-2" placeholder="Name" [(ngModel)]="name">
+  <input class="form-control mb-2" placeholder="Email" [(ngModel)]="email">
+  <input class="form-control mb-2" type="password" placeholder="Password" [(ngModel)]="password">
+
+  <select class="form-control mb-2" [(ngModel)]="role">
+    <option value="INFLUENCER">Influencer</option>
+    <option value="ADVERTISER">Advertiser</option>
+  </select>
+
+  <button class="btn btn-success" (click)="onRegister()">Register</button>
+
+</div>

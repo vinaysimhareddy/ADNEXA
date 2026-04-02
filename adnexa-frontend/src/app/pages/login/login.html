@@ -1,0 +1,21 @@
+<div class="container mt-5" style="max-width: 400px;">
+
+  <h2 class="mb-4">Login</h2>
+
+ 
+  <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+
+  <input class="form-control mb-2" placeholder="Email" type="email" [(ngModel)]="email" />
+
+  <input class="form-control mb-2" type="password" placeholder="Password" [(ngModel)]="password" />
+
+  <button class="btn btn-primary w-100" (click)="onLogin()" [disabled]="loading">
+    {{ loading ? 'Logging in...' : 'Login' }}
+  </button>
+
+  <p class="mt-3 text-center">
+    Don't have an account?
+    <button class="btn btn-link p-0" (click)="goToRegister()">Sign Up</button>
+  </p>
+
+</div>
